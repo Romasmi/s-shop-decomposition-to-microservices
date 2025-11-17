@@ -32,7 +32,7 @@ dispatch the driver with the sandwich to the user
 - Bounded Context diagram for each microservice
 - Contract for each microservice
 
-Examoles
+Examples
 - https://github.com/team7katas/sysopsquad?tab=readme-ov-file#process-views
 - https://github.com/tekiegirl/Archangels/blob/main/2.SolutionBackground/Conceptual.md
 
