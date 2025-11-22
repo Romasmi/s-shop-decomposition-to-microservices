@@ -11,7 +11,7 @@ A national sandwich shop wants to enable 'fax in your order' but over the Intern
 Users: thousands, perhaps one day millions
 ### Requirements:
 - Users will place their order, then be given a time to pick up their sandwich and directions 
-to the shop (which must integrate with several external mapping services that include 
+to the shop (which must integrate with several external mapping services that includes 
 traffic information) 
 - if the shop offers a delivery service, 
 dispatch the driver with the sandwich to the user  
@@ -36,3 +36,33 @@ Examples
 - https://github.com/team7katas/sysopsquad?tab=readme-ov-file#process-views
 - https://github.com/tekiegirl/Archangels/blob/main/2.SolutionBackground/Conceptual.md
 
+## Solution
+
+### Stakeholders
+This section describes key stakeholders of the system and their architectural concerns.
+
+#### SH-1: Customer (Availability, performance, scalability, security)
+User who places orders, pay and pick up or order delivery.
+
+- system should be available and response time is critical
+- security is important due to personal data and online payment 
+
+#### SH-2 ShopOwner (Availability, Security)
+User who gets orders, process them and ship them.
+
+- shows should be notified about order and their changes in time
+- security is important because ShopOwner works with payments, customer data and accountment 
+
+#### SH-3 Courier (Availability, performance)
+User who delivers orders.
+
+- courier should be notified about order in time 
+and use location services without any issue like delays
+
+#### SH-4 Administrator (Scalability, security)
+User who owns a parent company and manager franchisers.
+
+- it should be easy to scale the system and expand franchise
+
+#### SH-5 Payment processor (External system)
+External service required for online payments.
