@@ -66,3 +66,20 @@ User who owns a parent company and manager franchisers.
 
 #### SH-5 Payment processor (External system)
 External service required for online payments.
+
+### Use cases
+
+#### UC-1 Place order
+- Customer gets catalog of sandwiches (SH-1)
+- Customer gets list of promotionals/specials (SH-1)
+- Customer makes order, chooses a delivery (optionally) and pays (SH-1, SH-2, SH-5)
+- (optionally) Customer gets location of a shop to pick up order (SH-2) 
+- Customer receives order confirmation (analog of fax) (SH-1)
+
+#### UC-2 Deliver order
+
+- Shop dispatches a courier (SH-2)
+- Courier process order - pick up, ship, deliver (SH-3)
+
+#### UC-3 Manager franchise.
+- Administrator creates a new franchiser (SH-4)
