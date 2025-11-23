@@ -88,30 +88,33 @@ External service required for online payments.
 
 ```mermaid
 
-C4Context 
+C4Context
     title System context diagram for online sandwich shop
-    Person(customer, "Customer")
-    Person(showOwner, "Show owner")
-    Person(courier, "Courier")
-    Person(administrator, "Administrator")
+    Enterprise_Boundary(b0, "") {
+        Person(customer, "Customer")
+        Person(shopOwner, "Show owner")
+        Person(courier, "Courier")
+        Person(administrator, "Administrator")
 
-    System(shop, "Shop system")
+        System(shop, "Online Sandwich shop")
+    }
 
-    System_Ext(paymentProvider, "Payment provider") 
-    System_Ext(emailProvider, "Email provider") 
-    System_Ext(smsProvider, "Sms provider") 
+    Enterprise_Boundary(b1, "External Providers") {
+        System_Ext(paymentProvider, "Payment provider")
+        System_Ext(emailProvider, "Email provider")
+        System_Ext(smsProvider, "SMS provider")
+    }
 
     Rel(customer, shop, "Uses")
-    Rel(showOwner, shop, "Uses")
+    Rel(shopOwner, shop, "Uses")
     Rel(courier, shop, "Uses")
     Rel(administrator, shop, "Uses")
 
     Rel(shop, paymentProvider, "withdraw money")
-    
+
     Rel(shop, emailProvider, "post email")
     Rel(emailProvider, shop, "send sending status")
 
-    Rel(shop, smsProvider, "post sms")
+    Rel(shop, smsProvider, "post SMS")
     Rel(smsProvider, shop, "send sending status")
-
 ```
