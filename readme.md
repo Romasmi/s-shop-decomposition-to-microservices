@@ -83,3 +83,35 @@ External service required for online payments.
 
 #### UC-3 Manager franchise.
 - Administrator creates a new franchiser (SH-4)
+
+### Context diagram
+
+```mermaid
+
+C4Context 
+    title System context diagram for online sandwich shop
+    Person(customer, "Customer")
+    Person(showOwner, "Show owner")
+    Person(courier, "Courier")
+    Person(administrator, "Administrator")
+
+    System(shop, "Shop system")
+
+    System_Ext(paymentProvider, "Payment provider") 
+    System_Ext(emailProvider, "Email provider") 
+    System_Ext(smsProvider, "Sms provider") 
+
+    Rel(customer, shop, "Uses")
+    Rel(showOwner, shop, "Uses")
+    Rel(courier, shop, "Uses")
+    Rel(administrator, shop, "Uses")
+
+    Rel(shop, paymentProvider, "withdraw money")
+    
+    Rel(shop, emailProvider, "post email")
+    Rel(emailProvider, shop, "send sending status")
+
+    Rel(shop, smsProvider, "post sms")
+    Rel(smsProvider, shop, "send sending status")
+
+```
