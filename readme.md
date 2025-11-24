@@ -120,22 +120,6 @@ The same as UC-7 but a specific shop and with shop as main actor
 - Administrator updates shop data
 - Shop gets notified about changes
 
-#### UC-1 Place order
-- Customer gets a catalog of sandwiches (SH-1)
-- Customer gets list of promotionals/specials (SH-1)
-- Customer makes order, chooses a delivery (optionally) and pays (SH-1, SH-2, SH-5)
-- (optionally) Customer gets location of a shop to pick up order (SH-2) 
-- Customer receives order confirmation (analog of fax) (SH-1)
-
-#### UC-2 Deliver order
-
-- Shop dispatches a courier (SH-2)
-- Courier process order - pick up, ship, deliver (SH-3)
-
-#### UC-3 Manager franchise.
-- Administrator creates a new franchiser (SH-4)
-- New franchiser notified about shop creation (SH-2)
-
 ### Context diagram
 
 ```mermaid
