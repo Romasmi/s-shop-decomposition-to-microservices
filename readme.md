@@ -68,9 +68,60 @@ User who owns a parent company and manager franchisers.
 External service required for online payments.
 
 ### Use cases
+Group by business flows
+
+#### Customer flow
+##### UC-1 Get a catalog of products and promotions (SH-1)
+- Customer gets catalog of products
+- Customer gets catalog of promotions
+
+##### UC-2 Create and modify cart (SH-1)
+- Customer adds products to a cart
+- Customer modifies/removes products in a cart
+
+##### UC-3 Checkout and payment (SH-1, SH-5)
+- Customer gets a cart to review
+- Customer gets a delivery estimation
+- Customer creates an order 
+- Customer pays
+- Customer gets order confirmation
+
+#### Order processing and delivery flow
+##### UC-4 Shop processes order (SH-2)
+- Shop gets a list of orders
+- Shop changes a status to `in progress` for some order
+- Shop changes s status to `completed` for some order
+- Shop changes a status to `ready for pickup` for some order
+
+##### UC-5 Customer picks up an order (SH-2, SH-1)
+- Customer gets notified about order in `ready to pickup` status
+- Shop changes a status to `completed` for some order
+
+##### UC-6 Courier delivers an order (SH-3)
+- Courier gets a list of orders to deliver
+- Courier changes a status to `in delivery` for some order
+- Courier changes s status to `completed` for some order
+
+#### Business administration flow
+##### UC-7 Administrator manages national promotions (SH-4)
+- Administrator gets a list of promotions
+- Administrator adds/removes promotions
+
+##### UC-8 Shop manages local promotions (SH-3)
+The same as UC-7 but a specific shop and with shop as main actor
+
+##### UC-9 Administrator create a new shop (SH-3, SH-4)
+- Administrator gets a list of shops
+- Administrator creates a new shop
+- Shop gets notified about creation
+
+##### UC-10 Administrator manages some shop  (SH-3, SH-4)
+- Administrator gets some shop
+- Administrator updates shop data
+- Shop gets notified about changes
 
 #### UC-1 Place order
-- Customer gets catalog of sandwiches (SH-1)
+- Customer gets a catalog of sandwiches (SH-1)
 - Customer gets list of promotionals/specials (SH-1)
 - Customer makes order, chooses a delivery (optionally) and pays (SH-1, SH-2, SH-5)
 - (optionally) Customer gets location of a shop to pick up order (SH-2) 
@@ -83,6 +134,7 @@ External service required for online payments.
 
 #### UC-3 Manager franchise.
 - Administrator creates a new franchiser (SH-4)
+- New franchiser notified about shop creation (SH-2)
 
 ### Context diagram
 
