@@ -142,11 +142,12 @@ The same as UC-7 but a specific shop and with shop as main actor
 
 C4Context
     title System context diagram for online sandwich shop
-    Enterprise_Boundary(b0, "") {
-        Person(customer, "Customer")
-        Person(shopOwner, "Show owner")
-        Person(courier, "Courier")
-        Person(administrator, "Administrator")
+    Person(customer, "Customer")
+    Person(shopOwner, "Show owner")
+    Person(courier, "Courier")
+    Person(administrator, "Administrator")
+
+    Enterprise_Boundary(b0, "System") {
 
         System(shop, "Online Sandwich shop")
     }
@@ -155,6 +156,7 @@ C4Context
         System_Ext(paymentProvider, "Payment provider")
         System_Ext(emailProvider, "Email provider")
         System_Ext(smsProvider, "SMS provider")
+        System_Ext(mappingProvider, "Mapping provider")
     }
 
     Rel(customer, shop, "Uses")
@@ -169,4 +171,5 @@ C4Context
 
     Rel(shop, smsProvider, "post SMS")
     Rel(smsProvider, shop, "send sending status")
+    Rel(shop, mappingProvider, "get directions and ETAs from")
 ```
