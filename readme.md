@@ -122,6 +122,7 @@ The same as UC-7 but a specific shop and with shop as main actor
 
 ### Context diagram
 
+https://mermaid.live/edit 
 ```mermaid
 
 C4Context
