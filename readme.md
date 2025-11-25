@@ -128,7 +128,7 @@ https://mermaid.live/edit
 C4Context
     title System context diagram for online sandwich shop
     Person(customer, "Customer")
-    Person(shopOwner, "Show owner")
+    Person(shopOwner, "Show Owner")
     Person(courier, "Courier")
     Person(administrator, "Administrator")
 
@@ -150,11 +150,46 @@ C4Context
     Rel(administrator, shop, "Uses")
 
     Rel(shop, paymentProvider, "withdraw money")
-
     Rel(shop, emailProvider, "post email")
-    Rel(emailProvider, shop, "send sending status")
-
     Rel(shop, smsProvider, "post SMS")
-    Rel(smsProvider, shop, "send sending status")
     Rel(shop, mappingProvider, "get directions and ETAs from")
+```
+### Container diagram
+
+```mermaid
+C4Container
+    title Container diagram for online sandwich shop
+
+    Person(customer, "Customer")
+    Person(courier, "Courier")
+    Person(shopOwner, "Show Owner")
+    Person(administrator, "Administrator")
+
+    System_Boundary(b0, "System") {
+        System(mobileApp, "Mobile App")
+        System(webSite, "Web site")
+        System(backend, "Online Sandwich shop back-end")
+    }
+
+    Enterprise_Boundary(b1, "External Providers") {
+        System_Ext(paymentProvider, "Payment provider")
+        System_Ext(emailProvider, "Email provider")
+        System_Ext(smsProvider, "SMS provider")
+        System_Ext(mappingProvider, "Mapping provider")
+    }
+
+    Rel(customer, webSite, "Uses")
+    Rel(customer, mobileApp, "Uses")
+    Rel(shopOwner, webSite, "Uses")
+    Rel(courier, mobileApp, "Uses")
+    Rel(administrator, webSite, "Uses")
+
+    Rel(webSite, backend, "API")
+    Rel(mobileApp, backend, "API")
+
+    Rel(backend, mappingProvider, "API")
+    Rel(backend, smsProvider, "API")
+    Rel(backend, paymentProvider, "API")
+    Rel(backend, emailProvider, "API")
+    
 ```
