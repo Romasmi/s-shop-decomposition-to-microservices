@@ -66,3 +66,130 @@ User who owns a parent company and manager franchisers.
 
 #### SH-5 Payment processor (External system)
 External service required for online payments.
+
+### Use cases
+Group by business flows
+
+#### Customer flow
+##### UC-1 Get a catalog of products and promotions (SH-1)
+- Customer gets catalog of products
+- Customer gets catalog of promotions
+
+##### UC-2 Create and modify cart (SH-1)
+- Customer adds products to a cart
+- Customer modifies/removes products in a cart
+
+##### UC-3 Checkout and payment (SH-1, SH-5)
+- Customer gets a cart to review
+- Customer gets a delivery estimation
+- Customer creates an order 
+- Customer pays
+- Customer gets order confirmation
+
+#### Order processing and delivery flow
+##### UC-4 Shop processes order (SH-2)
+- Shop gets a list of orders
+- Shop changes a status to `in progress` for some order
+- Shop changes s status to `completed` for some order
+- Shop changes a status to `ready for pickup` for some order
+
+##### UC-5 Customer picks up an order (SH-2, SH-1)
+- Customer gets notified about order in `ready to pickup` status
+- Shop changes a status to `completed` for some order
+
+##### UC-6 Courier delivers an order (SH-3)
+- Courier gets a list of orders to deliver
+- Courier changes a status to `in delivery` for some order
+- Courier changes s status to `completed` for some order
+
+#### Business administration flow
+##### UC-7 Administrator manages national promotions (SH-4)
+- Administrator gets a list of promotions
+- Administrator adds/removes promotions
+
+##### UC-8 Shop manages local promotions (SH-3)
+The same as UC-7 but a specific shop and with shop as main actor
+
+##### UC-9 Administrator create a new shop (SH-3, SH-4)
+- Administrator gets a list of shops
+- Administrator creates a new shop
+- Shop gets notified about creation
+
+##### UC-10 Administrator manages some shop  (SH-3, SH-4)
+- Administrator gets some shop
+- Administrator updates shop data
+- Shop gets notified about changes
+
+### Context diagram
+
+https://mermaid.live/edit 
+```mermaid
+
+C4Context
+    title System context diagram for online sandwich shop
+    Person(customer, "Customer")
+    Person(shopOwner, "Show Owner")
+    Person(courier, "Courier")
+    Person(administrator, "Administrator")
+
+    Enterprise_Boundary(b0, "System") {
+
+        System(shop, "Online Sandwich shop")
+    }
+
+    Enterprise_Boundary(b1, "External Providers") {
+        System_Ext(paymentProvider, "Payment provider")
+        System_Ext(emailProvider, "Email provider")
+        System_Ext(smsProvider, "SMS provider")
+        System_Ext(mappingProvider, "Mapping provider")
+    }
+
+    Rel(customer, shop, "Uses")
+    Rel(shopOwner, shop, "Uses")
+    Rel(courier, shop, "Uses")
+    Rel(administrator, shop, "Uses")
+
+    Rel(shop, paymentProvider, "withdraw money")
+    Rel(shop, emailProvider, "post email")
+    Rel(shop, smsProvider, "post SMS")
+    Rel(shop, mappingProvider, "get directions and ETAs from")
+```
+### Container diagram
+
+```mermaid
+C4Container
+    title Container diagram for online sandwich shop
+
+    Person(customer, "Customer")
+    Person(courier, "Courier")
+    Person(shopOwner, "Show Owner")
+    Person(administrator, "Administrator")
+
+    System_Boundary(b0, "System") {
+        System(mobileApp, "Mobile App")
+        System(webSite, "Web site")
+        System(backend, "Online Sandwich shop back-end")
+    }
+
+    Enterprise_Boundary(b1, "External Providers") {
+        System_Ext(paymentProvider, "Payment provider")
+        System_Ext(emailProvider, "Email provider")
+        System_Ext(smsProvider, "SMS provider")
+        System_Ext(mappingProvider, "Mapping provider")
+    }
+
+    Rel(customer, webSite, "Uses")
+    Rel(customer, mobileApp, "Uses")
+    Rel(shopOwner, webSite, "Uses")
+    Rel(courier, mobileApp, "Uses")
+    Rel(administrator, webSite, "Uses")
+
+    Rel(webSite, backend, "API")
+    Rel(mobileApp, backend, "API")
+
+    Rel(backend, mappingProvider, "API")
+    Rel(backend, smsProvider, "API")
+    Rel(backend, paymentProvider, "API")
+    Rel(backend, emailProvider, "API")
+    
+```
