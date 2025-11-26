@@ -38,6 +38,13 @@ Examples
 
 ## Solution
 
+### DDD 
+First of all, let's use DDD to decompose the system into bounded contexts
+
+#### Event storming
+Miro: [link to miro](https://miro.com/app/board/uXjVJkF2MbQ=/?share_link_id=450228953536)
+
+
 ### Stakeholders
 This section describes key stakeholders of the system and their architectural concerns.
 
@@ -120,7 +127,7 @@ The same as UC-7 but a specific shop and with shop as main actor
 - Administrator updates shop data
 - Shop gets notified about changes
 
-### Context diagram
+### C4 Context diagram
 
 https://mermaid.live/edit 
 ```mermaid
@@ -154,42 +161,37 @@ C4Context
     Rel(shop, smsProvider, "post SMS")
     Rel(shop, mappingProvider, "get directions and ETAs from")
 ```
-### Container diagram
+
+### DDD Bounded contexts
+
+
+
+### C4 Container diagram
 
 ```mermaid
 C4Container
-    title Container diagram for online sandwich shop
+    title Container diagram with microservices
 
     Person(customer, "Customer")
-    Person(courier, "Courier")
-    Person(shopOwner, "Show Owner")
-    Person(administrator, "Administrator")
 
     System_Boundary(b0, "System") {
-        System(mobileApp, "Mobile App")
-        System(webSite, "Web site")
-        System(backend, "Online Sandwich shop back-end")
+        Container(mobileApp, "Mobile App", "iOS/Android")
+        Container(webApp, "Web App", "React")
+
+        Container(orderService, "Order Service", "Microservice")
+        Container(catalogService, "Catalog Service", "Microservice")
+        Container(paymentService, "Payment Service", "Microservice")
+        Container(notificationService, "Notification Service", "Microservice")
+        Container(deliveryService, "Delivery Service", "Microservice")
+        Container(shopService, "Shop Management Service", "Microservice")
+
+        ContainerDb(orderDb, "Order Database", "PostgreSQL")
+        ContainerDb(catalogDb, "Catalog Database", "PostgreSQL")
     }
 
-    Enterprise_Boundary(b1, "External Providers") {
-        System_Ext(paymentProvider, "Payment provider")
-        System_Ext(emailProvider, "Email provider")
-        System_Ext(smsProvider, "SMS provider")
-        System_Ext(mappingProvider, "Mapping provider")
-    }
-
-    Rel(customer, webSite, "Uses")
     Rel(customer, mobileApp, "Uses")
-    Rel(shopOwner, webSite, "Uses")
-    Rel(courier, mobileApp, "Uses")
-    Rel(administrator, webSite, "Uses")
-
-    Rel(webSite, backend, "API")
-    Rel(mobileApp, backend, "API")
-
-    Rel(backend, mappingProvider, "API")
-    Rel(backend, smsProvider, "API")
-    Rel(backend, paymentProvider, "API")
-    Rel(backend, emailProvider, "API")
+    Rel(mobileApp, orderService, "API calls")
+    Rel(orderService, orderDb, "Reads/Writes")
     
 ```
+
