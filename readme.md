@@ -171,8 +171,11 @@ C4Context
 ```
 
 ### C4 Container diagram
-
+(copy paste to mermaid live and zoom in/out)
+Each service has its own database but in order to simplify the diagram databases are omitted except for payment service.
 ```mermaid
+
+
 C4Container
     title Container diagram with microservices
 
@@ -187,7 +190,7 @@ C4Container
 
         Container(mobileApp, "Courier mobile App")
         Rel(courier, mobileApp, "Uses")
-        
+
         Container(webSite, "Shop web site")
         Rel(customer, webSite, "Uses")
 
@@ -197,36 +200,45 @@ C4Container
         Container(franshiseManagementWebSite, "Franchise management web site")
         Rel(administrator, franshiseManagementWebSite, "Uses")
 
+        Container(apiGateway, "API Gateway")
+        Rel(mobileApp, apiGateway, "request")
+        Rel(webSite, apiGateway, "request")
+        Rel(shopAdminWebSite, apiGateway, "request")
+        Rel(franshiseManagementWebSite, apiGateway, "request")
+
+
+        Container(eventBroker, "Event broker")
+
         System_Boundary(bShop, "Shop context") {
-            Container(orderService, "Order Service", "Microservice")
-            Container(catalogService, "Catalog Service", "Microservice")
-            Container(notificationService, "Notification Service", "Microservice")
+            Container(orderService, "Order Service")
+            Container(catalogService, "Catalog Service")
+            Container(kitchenService, "Kitchen Service")
+            Container(deliveryService, "Delivery Service")
         }
 
         System_Boundary(bShopMan, "Shop management context") {
-            Container(deliveryService, "Delivery Service", "Microservice")
-            
+            Container(promotionService, "Promotion service")
+            Container(menuService, "Menu service")
         }
 
         System_Boundary(bCorpMan, "Corporate management context") {
-            Container(shopService, "Shop Management Service", "Microservice")
-            
+            Container(franshiseService, "Franshise service")
+            Container(globalPromotionService, "Global promotion service")
+            Container(globalMenuService, "Global menu service")
         }
- 
-       System_Boundary(bPayment, "Payment context") {
+
+        System_Boundary(bPayment, "Payment context") {
             Container(paymentService, "Payment Service", "Microservice")
-
-            ContainerDb(orderDb, "Order Database", "PostgreSQL")
-            ContainerDb(catalogDb, "Catalog Database", "PostgreSQL")
-
+            ContainerDb(paymentDb, "Payment service database")
+            Rel(paymentService, paymentDb, "SQL CRUD")
         }
+
 
         System_Ext(paymentProvider, "Payment provider")
         System_Ext(emailProvider, "Email provider")
         System_Ext(smsProvider, "SMS provider")
         System_Ext(mappingProvider, "Mapping provider")
     }
-
 
 ```
 
