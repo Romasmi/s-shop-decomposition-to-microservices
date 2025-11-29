@@ -170,10 +170,6 @@ C4Context
     Rel(shop, mappingProvider, "get directions and ETAs from")
 ```
 
-### DDD Bounded contexts
-
-
-
 ### C4 Container diagram
 
 ```mermaid
@@ -181,25 +177,56 @@ C4Container
     title Container diagram with microservices
 
     Person(customer, "Customer")
+    Person(shopOwner, "Show Owner")
+    Person(courier, "Courier")
+    Person(administrator, "Administrator")
 
-    System_Boundary(b0, "System") {
-        Container(mobileApp, "Mobile App", "iOS/Android")
-        Container(webApp, "Web App", "React")
+    System_Boundary(bSystem, "System container") {
+        Container(mobileApp, "Shop mobile App")
+        Rel(customer, mobileApp, "Uses")
 
-        Container(orderService, "Order Service", "Microservice")
-        Container(catalogService, "Catalog Service", "Microservice")
-        Container(paymentService, "Payment Service", "Microservice")
-        Container(notificationService, "Notification Service", "Microservice")
-        Container(deliveryService, "Delivery Service", "Microservice")
-        Container(shopService, "Shop Management Service", "Microservice")
+        Container(mobileApp, "Courier mobile App")
+        Rel(courier, mobileApp, "Uses")
+        
+        Container(webSite, "Shop web site")
+        Rel(customer, webSite, "Uses")
 
-        ContainerDb(orderDb, "Order Database", "PostgreSQL")
-        ContainerDb(catalogDb, "Catalog Database", "PostgreSQL")
+        Container(shopAdminWebSite, "Shop admin web site")
+        Rel(shopOwner, shopAdminWebSite, "Uses")
+
+        Container(franshiseManagementWebSite, "Franchise management web site")
+        Rel(administrator, franshiseManagementWebSite, "Uses")
+
+        System_Boundary(bShop, "Shop context") {
+            Container(orderService, "Order Service", "Microservice")
+            Container(catalogService, "Catalog Service", "Microservice")
+            Container(notificationService, "Notification Service", "Microservice")
+        }
+
+        System_Boundary(bShopMan, "Shop management context") {
+            Container(deliveryService, "Delivery Service", "Microservice")
+            
+        }
+
+        System_Boundary(bCorpMan, "Corporate management context") {
+            Container(shopService, "Shop Management Service", "Microservice")
+            
+        }
+ 
+       System_Boundary(bPayment, "Payment context") {
+            Container(paymentService, "Payment Service", "Microservice")
+
+            ContainerDb(orderDb, "Order Database", "PostgreSQL")
+            ContainerDb(catalogDb, "Catalog Database", "PostgreSQL")
+
+        }
+
+        System_Ext(paymentProvider, "Payment provider")
+        System_Ext(emailProvider, "Email provider")
+        System_Ext(smsProvider, "SMS provider")
+        System_Ext(mappingProvider, "Mapping provider")
     }
 
-    Rel(customer, mobileApp, "Uses")
-    Rel(mobileApp, orderService, "API calls")
-    Rel(orderService, orderDb, "Reads/Writes")
-    
+
 ```
 
