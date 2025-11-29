@@ -41,9 +41,17 @@ Examples
 ### DDD 
 First of all, let's use DDD to decompose the system into bounded contexts
 
-#### Event storming
+#### Event storming in DDD
 Miro: [link to miro](https://miro.com/app/board/uXjVJkF2MbQ=/?share_link_id=450228953536)
 
+As a result there are 3 bounded contexts:
+- Shop context which includes shopping, cooking and delivery;
+- Shop management context;
+- Corporate management context;
+- Payment context.
+
+Domain events are listed in a Miro board.
+Let's consider shop context as a key context in this system.
 
 ### Stakeholders
 This section describes key stakeholders of the system and their architectural concerns.
@@ -117,12 +125,12 @@ Group by business flows
 ##### UC-8 Shop manages local promotions (SH-3)
 The same as UC-7 but a specific shop and with shop as main actor
 
-##### UC-9 Administrator create a new shop (SH-3, SH-4)
+##### UC-9 Administrator creates a new shop (SH-3, SH-4)
 - Administrator gets a list of shops
 - Administrator creates a new shop
 - Shop gets notified about creation
 
-##### UC-10 Administrator manages some shop  (SH-3, SH-4)
+##### UC-10 Administrator manages some shop (SH-3, SH-4)
 - Administrator gets some shop
 - Administrator updates shop data
 - Shop gets notified about changes
