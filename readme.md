@@ -389,6 +389,37 @@ C4Container
     Rel(deliveryService, deliveryDb, "Stores delivery info")
     }
 ```
+#### API endpoint
+##### Catalog endpoints
+- GET /catalog/categories - Get all menu categories
+- GET /catalog/items - Get all menu items
+- GET /catalog/items/{itemId} - Get specific menu item details
+- GET /catalog/items?category={category} - Get items by category
+- GET /catalog/search?q={query} - Search menu items
+- GET /catalog/featured - Get featured/popular items 
 
+#### Promotion endpoints
+- GET /promotions - Get all promotions
+- GET /promotions/{promotionId} - Get specific promotion details
 
+##### Cart endpoints
+it's only 1 cart per user.
 
+- GET /cart - Get current user's cart
+- POST /cart/items - Add item to cart
+- PUT /cart/items/{itemId} - Update item quantity in cart
+- DELETE /cart/items/{itemId} - Remove item from cart
+- POST /cart/apply-promo - Apply promotion code
+- DELETE /cart/promo - Remove promotion
+- DELETE /cart - Clear/abandon cart
+
+##### Checkout & Payment endpoints
+- POST /cart/checkout - Checkout cart (validate + payment + create order)
+- POST /payments/{orderId}/retry - Retry failed payment
+- GET /payments/{orderId}/status - Check payment status
+
+##### Order endpoints
+- GET /orders - Get user's order history
+- GET /orders/{orderId} - Get specific order details
+- GET /orders/{orderId}/status - Get order status only
+- POST /orders/{orderId}/cancel - Cancel order (if allowed)
