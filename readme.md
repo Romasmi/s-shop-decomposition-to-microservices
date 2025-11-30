@@ -423,3 +423,82 @@ it's only 1 cart per user.
 - GET /orders/{orderId} - Get specific order details
 - GET /orders/{orderId}/status - Get order status only
 - POST /orders/{orderId}/cancel - Cancel order (if allowed)
+
+#### Sequence diagram of customer flow use cases
+##### UC-1 Get a catalog of products and promotions
+
+```mermaid
+sequenceDiagram
+    actor Customer
+    participant APIG as API Gateway
+    participant CS as Catalog Service
+
+    Customer->>APIG: GET /catalog/categories
+    APIG->>CS: Get categories
+    CS-->>APIG: Categories list
+    APIG-->>Customer: Menu categories
+    
+    Customer->>APIG: GET /catalog/items
+    APIG->>CS: Get menu items
+    CS-->>APIG: Products list
+    APIG-->>Customer: Products list
+    
+    APIG->>CS: Get promotions
+    CS-->>APIG: Promotions list
+    APIG-->>Customer: Promotions list
+```
+
+##### UC-2 Create and modify cart
+```mermaid
+sequenceDiagram
+    actor Customer
+    participant APIG as API Gateway
+    participant OS as Order Service
+    participant CS as Catalog Service
+
+    Customer->>APIG: POST /cart/items {itemId, quantity}
+    APIG->>OS: Add to cart
+    OS->>CS: Validate item & price
+    CS-->>OS: Item details
+    OS-->>APIG: Cart updated
+    APIG-->>Customer: Item added
+    
+    Customer->>APIG: GET /cart
+    APIG->>OS: Get cart
+    OS-->>APIG: Cart contents
+    APIG-->>Customer: Cart summary
+    
+    Customer->>APIG: PUT /cart/items/{id} {quantity}
+    APIG->>OS: Update quantity
+    OS-->>APIG: Cart updated
+    APIG-->>Customer: Quantity changed
+    
+    Customer->>APIG: DELETE /cart/items/{id}
+    APIG->>OS: Remove item
+    OS-->>APIG: Cart updated
+    APIG-->>Customer: Item removed
+```
+
+##### UC-3 Checkout and payment
+```mermaid
+sequenceDiagram
+    actor Customer
+    participant APIG as API Gateway
+    participant OS as Order Service
+    participant PS as Payment Service
+    participant DS as Delivery Service
+
+    Customer->>APIG: GET /cart
+    APIG->>OS: Get cart for review
+    OS-->>APIG: Cart with total
+    APIG-->>Customer: Cart summary to review
+    
+    Customer->>APIG: POST /cart/checkout
+    APIG->>OS: Create order from cart
+    OS->>DS: Get delivery estimation
+    DS-->>OS: Delivery time
+    OS->>PS: Process payment
+    PS-->>OS: Payment authorized
+    OS-->>APIG: Order created
+    APIG-->>Customer: Order confirmation with ETA
+```
