@@ -308,3 +308,87 @@ C4Container
     Rel(orderService, mappingProvider, "Requests pickup directions / traffic info")
 ```
 
+Anyway the Container diagram above is pretty complex because it container microservices from
+all bounderd contexts, so let's dive into a specific context and use case.
+
+### C4 Container diagram for Shop context
+
+```mermaid
+C4Container
+    title Shop Context - Order Fulfillment Workflow
+    Enterprise_Boundary(c1, "Sandwich Ordering System") {
+    
+    Person(customer, "Customer", "Places order via app")
+    
+    Container(apiGateway, "API Gateway")
+    Container(eventBroker, "Event Broker", "Kafka")
+    
+    System_Boundary(shopContext, "Shop Context") {
+        Container(orderService, "Order Service", "Manages order lifecycle")
+        ContainerDb(orderDb, "Order DB")
+        
+        Container(catalogService, "Catalog Service", "Provides menu & pricing")
+        ContainerDb(catalogDb, "Catalog DB")
+        
+        Container(kitchenService, "Kitchen Service", "Manages food preparation")
+        ContainerDb(kitchenDb, "Kitchen DB")
+        
+        Container(deliveryService, "Delivery Service", "Manages delivery logistics")
+        ContainerDb(deliveryDb, "Delivery DB")
+        
+        Container(paymentService, "Payment Service", "Handles payments")
+        ContainerDb(paymentDb, "Payment DB")
+
+        Container(notificationService, "Notification Service", "Sends customer updates")
+        ContainerDb(notificationDb, "Notification DB")
+    }
+    
+    System_Ext(mappingProvider, "Mapping Provider", "Provides directions & traffic")
+    System_Ext(paymentProvider, "Payment Provider", "Processes payments")
+    
+    %% Customer initiates order flow
+    Rel(customer, apiGateway, "Submits order")
+    Rel(apiGateway, orderService, "POST /orders")
+    
+    %% Order creation phase
+    Rel(orderService, catalogService, "GET /menu/items", "Validate items & get prices")
+    Rel(orderService, paymentService, "POST /payments", "Authorize payment")
+    Rel(paymentService, paymentProvider, "Process payment")
+    Rel(orderService, mappingProvider, "Get pickup ETA & directions")
+    
+    %% Event publishing - Order placed
+    Rel(orderService, eventBroker, "OrderPlaced event")
+    
+    %% Kitchen workflow
+    Rel(kitchenService, eventBroker, "Subscribes to OrderPlaced")
+    Rel(kitchenService, orderService, "GET /orders/{id}", "Get order details")
+    Rel(kitchenService, eventBroker, "OrderPreparing event")
+    Rel(kitchenService, eventBroker, "OrderReady event")
+    
+    %% Delivery workflow
+    Rel(deliveryService, eventBroker, "Subscribes to OrderReady")
+    Rel(deliveryService, orderService, "GET /orders/{id}", "Get delivery address")
+    Rel(deliveryService, mappingProvider, "Get delivery route")
+    Rel(deliveryService, eventBroker, "DriverAssigned event")
+    Rel(deliveryService, eventBroker, "OrderPickedUp event")
+    Rel(deliveryService, eventBroker, "OrderDelivered event")
+    
+    %% Order completion
+    Rel(orderService, eventBroker, "Subscribes to OrderDelivered")
+    Rel(orderService, paymentService, "POST /payments/capture", "Capture payment")
+    Rel(orderService, eventBroker, "OrderCompleted event")
+    
+    %% Notifications throughout the flow
+    Rel(notificationService, eventBroker, "Subscribes to all order events")
+    Rel(notificationService, customer, "SMS/Email/Push notifications")
+    
+    %% Data persistence
+    Rel(orderService, orderDb, "Stores order state")
+    Rel(catalogService, catalogDb, "Reads menu data")
+    Rel(kitchenService, kitchenDb, "Stores preparation status")
+    Rel(deliveryService, deliveryDb, "Stores delivery info")
+    }
+```
+
+
+
