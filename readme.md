@@ -172,73 +172,139 @@ C4Context
 
 ### C4 Container diagram
 (copy paste to mermaid live and zoom in/out)
-Each service has its own database but in order to simplify the diagram databases are omitted except for payment service.
+
 ```mermaid
-
-
 C4Container
-    title Container diagram with microservices
+    title Container Diagram with Microservices
 
     Person(customer, "Customer")
-    Person(shopOwner, "Show Owner")
+    Person(shopOwner, "Shop Owner")
     Person(courier, "Courier")
     Person(administrator, "Administrator")
 
-    System_Boundary(bSystem, "System container") {
-        Container(mobileApp, "Shop mobile App")
-        Rel(customer, mobileApp, "Uses")
+    System_Boundary(bSystem, "Sandwich Ordering System") {
+    %% FRONTEND CLIENTS
+        Container(customerMobileApp, "Customer Mobile App")
+        Rel(customer, customerMobileApp, "Uses")
 
-        Container(mobileApp, "Courier mobile App")
-        Rel(courier, mobileApp, "Uses")
+        Container(courierMobileApp, "Courier Mobile App")
+        Rel(courier, courierMobileApp, "Uses")
 
-        Container(webSite, "Shop web site")
+        Container(webSite, "Customer Web App")
         Rel(customer, webSite, "Uses")
 
-        Container(shopAdminWebSite, "Shop admin web site")
+        Container(shopAdminWebSite, "Shop Admin Web App")
         Rel(shopOwner, shopAdminWebSite, "Uses")
 
-        Container(franshiseManagementWebSite, "Franchise management web site")
-        Rel(administrator, franshiseManagementWebSite, "Uses")
+        Container(franchiseAdminWebSite, "Franchise Admin Web App")
+        Rel(administrator, franchiseAdminWebSite, "Uses")
 
-        Container(apiGateway, "API Gateway")
-        Rel(mobileApp, apiGateway, "request")
-        Rel(webSite, apiGateway, "request")
-        Rel(shopAdminWebSite, apiGateway, "request")
-        Rel(franshiseManagementWebSite, apiGateway, "request")
+        Container(apiGateway, "API Gateway", "Routes all API calls")
 
+        Rel(customerMobileApp, apiGateway, "HTTP")
+        Rel(courierMobileApp, apiGateway, "HTTP")
+        Rel(webSite, apiGateway, "HTTP")
+        Rel(shopAdminWebSite, apiGateway, "HTTP")
+        Rel(franchiseAdminWebSite, apiGateway, "HTTP")
 
-        Container(eventBroker, "Event broker")
+        Container(eventBroker, "Event Broker", "Kafka")
 
-        System_Boundary(bShop, "Shop context") {
-            Container(orderService, "Order Service")
-            Container(catalogService, "Catalog Service")
-            Container(kitchenService, "Kitchen Service")
-            Container(deliveryService, "Delivery Service")
+    %% SHOP CONTEXT
+        System_Boundary(bShop, "Shop Context") {
+            Container(orderService, "Order Service", "Microservice")
+            ContainerDb(orderDb, "Order DB")
+
+            Container(catalogService, "Catalog Service", "Provides read-only catalog")
+            ContainerDb(catalogDb, "Catalog DB")
+
+            Container(kitchenService, "Kitchen Service", "Tracks food preparation workflow")
+            ContainerDb(kitchenDb, "Kitchen DB")
+
+            Container(deliveryService, "Delivery Service", "Handles dispatching couriers")
+            ContainerDb(deliveryDb, "Delivery DB")
+
+            Rel(orderService, orderDb, "SQL CRUD")
+            Rel(catalogService, catalogDb, "SQL CRUD")
+            Rel(kitchenService, kitchenDb, "SQL CRUD")
+            Rel(deliveryService, deliveryDb, "SQL CRUD")
         }
 
-        System_Boundary(bShopMan, "Shop management context") {
-            Container(promotionService, "Promotion service")
-            Container(menuService, "Menu service")
+    %% SHOP MANAGEMENT CONTEXT
+        System_Boundary(bShopMan, "Shop Management Context") {
+            Container(menuService, "Menu Management Service")
+            ContainerDb(menuDb, "Menu DB")
+
+            Container(promotionService, "Local Promotion Service")
+            ContainerDb(promoDb, "Local Promotions DB")
+
+            Rel(menuService, menuDb, "SQL CRUD")
+            Rel(promotionService, promoDb, "SQL CRUD")
         }
 
-        System_Boundary(bCorpMan, "Corporate management context") {
-            Container(franshiseService, "Franshise service")
-            Container(globalPromotionService, "Global promotion service")
-            Container(globalMenuService, "Global menu service")
+    %% CORPORATE CONTEXT
+        System_Boundary(bCorpMan, "Corporate Management Context") {
+            Container(franchiseService, "Franchise Management Service")
+            ContainerDb(franchiseDb, "Franchise DB")
+
+            Container(globalPromotionService, "Global Promotion Service")
+            ContainerDb(globalPromoDb, "Global Promotions DB")
+
+            Container(globalMenuService, "Global Menu Service")
+            ContainerDb(globalMenuDb, "Global Menu DB")
+
+            Rel(franchiseService, franchiseDb, "SQL CRUD")
+            Rel(globalPromotionService, globalPromoDb, "SQL CRUD")
+            Rel(globalMenuService, globalMenuDb, "SQL CRUD")
         }
 
-        System_Boundary(bPayment, "Payment context") {
-            Container(paymentService, "Payment Service", "Microservice")
-            ContainerDb(paymentDb, "Payment service database")
+        System_Boundary(bPayment, "Payment Context") {
+            Container(paymentService, "Payment Service")
+            ContainerDb(paymentDb, "Payment DB")
+
             Rel(paymentService, paymentDb, "SQL CRUD")
         }
 
+        System_Boundary(bNotification, "Notification Context") {
+            Container(notificationService, "Notification Service")
+            ContainerDb(notificationDb, "Notification DB")
 
-        System_Ext(paymentProvider, "Payment provider")
-        System_Ext(emailProvider, "Email provider")
-        System_Ext(smsProvider, "SMS provider")
-        System_Ext(mappingProvider, "Mapping provider")
+            Rel(notificationService, notificationDb, "SQL CRUD")
+            Rel(notificationService, smsProvider, "Send SMS")
+            Rel(notificationService, emailProvider, "Send EMAIL")
+        }
+
+
+    %% EXTERNAL SYSTEMS
+        System_Ext(paymentProvider, "Payment Provider")
+        System_Ext(emailProvider, "Email Provider")
+        System_Ext(smsProvider, "SMS Provider")
+        System_Ext(mappingProvider, "Mapping Provider")
     }
 
+    %% REPLACE THESE THREE LINES WITH SPECIFIC SERVICE RELATIONSHIPS:
+    Rel(apiGateway, orderService, "Place orders, check status")
+    Rel(apiGateway, catalogService, "Get menu & promotions")
+    Rel(apiGateway, deliveryService, "Courier assignments, delivery tracking")
+    Rel(apiGateway, kitchenService, "Order preparation updates")
+    Rel(apiGateway, menuService, "Shop menu management")
+    Rel(apiGateway, promotionService, "Local promotion management")
+    Rel(apiGateway, franchiseService, "Franchise administration")
+    Rel(apiGateway, globalPromotionService, "Global promotion management")
+    Rel(apiGateway, globalMenuService, "Global menu management")
+    Rel(apiGateway, paymentService, "Payment processing")
+
+    Rel(orderService, catalogService, "Get menu & promotions")
+    Rel(orderService, paymentService, "Process payment")
+    Rel(paymentService, paymentProvider, "External API call")
+
+    Rel(orderService, eventBroker, "Publishes OrderPlaced event")
+    Rel(kitchenService, eventBroker, "Subscribes to OrderPlaced")
+    Rel(kitchenService, eventBroker, "Publishes OrderReady")
+    Rel(deliveryService, eventBroker, "Subscribes to OrderReady")
+
+    Rel(globalPromotionService, eventBroker, "Publishes GlobalPromotionCreated event")
+    Rel(globalMenuService, eventBroker, "Publishes GlobalMenuItemCreated event")
+
+    Rel(orderService, mappingProvider, "Requests pickup directions / traffic info")
 ```
 
